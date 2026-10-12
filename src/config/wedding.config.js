@@ -14,9 +14,9 @@
  */
 const config = {
   meta: {
-    title: 'Dr. T. Haarika & B. Manoj Kumar · Wedding Invitation',
+    title: 'T. Haarika & B. Manoj Kumar · Wedding Invitation',
     shareMessage:
-      'We cordially invite you to the wedding of Dr. T. Haarika & B. Manoj Kumar. Please open our digital invitation:',
+      'We cordially invite you to the wedding of T. Haarika & B. Manoj Kumar. Please open our digital invitation:',
     siteUrl: '', // leave empty to use the current page address
   },
 
@@ -28,8 +28,8 @@ const config = {
 
   couple: {
     bride: {
-      name: 'Dr. T. Haarika',
-      fullName: 'Chi. La. Sow. Dr. T. Haarika',
+      name: 'T. Haarika',
+      fullName: 'Chi. La. Sow. T. Haarika',
       degree: 'B.D.S.',
       relation: 'Eldest Daughter',
       parents: 'Smt. Lakshmi Devi & Sri T. Maddileti',
