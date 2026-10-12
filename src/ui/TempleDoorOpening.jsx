@@ -162,7 +162,7 @@ const TempleDoorOpening = forwardRef(function TempleDoorOpening({ active = false
         <video
           ref={videoRef}
           className="temple-door-video"
-          src="/media/temple-doors.mp4"
+          src="/media/temple-doors-v2.mp4"
           playsInline
           muted
           autoPlay={false}
