@@ -51,7 +51,7 @@ export default function App() {
       gsap.to(el, {
         opacity: 0,
         scale: 0.98,
-        duration: 0.7,
+        duration: 0.38,
         ease: 'power2.out',
         onComplete: () => {
           setPrecardHidden(true)

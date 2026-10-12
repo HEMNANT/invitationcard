@@ -59,39 +59,53 @@ export default function CoupleInviteReveal({ reduced }) {
     lastDrawnIndexRef.current = frameIdx
   }, [])
 
-  // Preload and pre-decode all 113 high-quality frames into memory
+  // Load Frame 1 immediately for crisp initial render, then batch-load remaining frames progressively
   useEffect(() => {
     let active = true
-    const imgs = []
+    const imgs = new Array(TOTAL_FRAMES)
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
-      const img = new Image()
-      const num = String(i).padStart(3, '0')
-      img.src = `/media/frames/f-${num}.jpg`
+    // Load Frame 1 immediately
+    const img1 = new Image()
+    img1.src = '/media/frames/f-001.jpg'
+    img1.onload = () => {
+      if (active && currentFrameRef.current === 1) {
+        drawFrame(1)
+      }
+    }
+    imgs[0] = img1
+    imagesRef.current = imgs
 
-      if (img.decode) {
-        img.decode().then(() => {
-          if (!active) return
-          if (i === currentFrameRef.current) {
-            drawFrame(i)
-          }
-        }).catch(() => {
-          // If decode promise fails, fallback to onload
-        })
-      } else {
-        img.onload = () => {
-          if (!active) return
-          if (i === currentFrameRef.current) {
-            drawFrame(i)
+    // Gently stream remaining frames in small idle batches without competing with opening animation
+    const loadRemaining = () => {
+      if (!active) return
+      let idx = 2
+      const batchSize = 4
+
+      const nextBatch = () => {
+        if (!active || idx > TOTAL_FRAMES) return
+        for (let b = 0; b < batchSize && idx <= TOTAL_FRAMES; b++, idx++) {
+          const img = new Image()
+          const num = String(idx).padStart(3, '0')
+          img.src = `/media/frames/f-${num}.jpg`
+          imgs[idx - 1] = img
+        }
+        if (idx <= TOTAL_FRAMES) {
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(nextBatch, { timeout: 600 })
+          } else {
+            setTimeout(nextBatch, 120)
           }
         }
       }
-      imgs.push(img)
+      nextBatch()
     }
-    imagesRef.current = imgs
+
+    // Delay background fetch by 3s so temple doors and audio get 100% bandwidth initially
+    const idleTimer = setTimeout(loadRemaining, 3000)
 
     return () => {
       active = false
+      clearTimeout(idleTimer)
     }
   }, [drawFrame])
 

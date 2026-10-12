@@ -16,8 +16,8 @@ const TempleDoorOpening = forwardRef(function TempleDoorOpening({ active = false
   const isPlayingRef = useRef(false)
 
   // 300 frames encoded at 30fps = 10.0s
-  // Frame 113 / 300 = 37.66% = 3.766s
-  const FRAME_113_TIME = 3.766
+  // Reveal content as doors part wide open (~1.9s)
+  const REVEAL_TIME = 1.9
   const TOTAL_FRAMES = 300
 
   const triggerReveal = useCallback(() => {
@@ -32,12 +32,12 @@ const TempleDoorOpening = forwardRef(function TempleDoorOpening({ active = false
     if (!video) return
     video.muted = true
     video.defaultMuted = true
+    video.playbackRate = 1.2
     video.currentTime = 0
     isPlayingRef.current = true
 
     video.play().catch((err) => {
       console.warn('Door video playback notice:', err)
-      // Fallback to canvas only if video format is unplayable
       setUseCanvas(true)
     })
   }, [])
@@ -61,7 +61,7 @@ const TempleDoorOpening = forwardRef(function TempleDoorOpening({ active = false
 
     const t = video.currentTime
 
-    if (t >= FRAME_113_TIME) {
+    if (t >= REVEAL_TIME) {
       triggerReveal()
     }
 
@@ -99,12 +99,12 @@ const TempleDoorOpening = forwardRef(function TempleDoorOpening({ active = false
     }
   }, [active, playVideo])
 
-  // Safety fallback: reveal content after 4.2s even if video events are throttled
+  // Safety fallback: reveal content after 2.2s even if video events are throttled
   useEffect(() => {
     if (!active) return
     const timer = setTimeout(() => {
       triggerReveal()
-    }, 4200)
+    }, 2200)
     return () => clearTimeout(timer)
   }, [active, triggerReveal])
 
