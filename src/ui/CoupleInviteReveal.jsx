@@ -9,7 +9,7 @@ const TOTAL_FRAMES = 113
 
 /**
  * CoupleInviteReveal
- * Renders the 113 animation frames of T. Harrika & T. Manoj.
+ * Renders the 113 animation frames of T. Haarika & B. Manoj.
  * Frames progress ONLY when the user scrolls.
  * At the last frame, an elegant half-gradient covers strictly the bottom half (50%)
  * with the invitation message: "We Are Cordially Inviting You!"
@@ -225,13 +225,13 @@ export default function CoupleInviteReveal({ reduced }) {
           <canvas
             ref={canvasRef}
             className="couple-frame__canvas"
-            aria-label="Animation of T. Harrika and T. Manoj inviting guests"
+            aria-label="Animation of T. Haarika and B. Manoj inviting guests"
           />
 
           <noscript>
             <img
               src="/media/frames/f-113.jpg"
-              alt="T. Harrika & T. Manoj"
+              alt="T. Haarika & B. Manoj"
               className="couple-frame__fallback"
             />
           </noscript>
@@ -266,7 +266,7 @@ export default function CoupleInviteReveal({ reduced }) {
               <div className="couple-frame__actions">
                 <a
                   href={`https://wa.me/${config.rsvp.whatsappNumber || '919876543210'}?text=${encodeURIComponent(
-                    'Warmest congratulations and best wishes to T. Harrika & T. Manoj on your wedding celebration!'
+                    'Warmest congratulations and best wishes to T. Haarika & B. Manoj on your wedding celebration!'
                   )}`}
                   className="btn btn--gold btn--small"
                   target="_blank"

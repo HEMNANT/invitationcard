@@ -20,8 +20,8 @@ const config = {
   },
 
   couple: {
-    bride: { name: 'T. Harrika', parents: 'Sri & Smt. T. Venkateshwarlu' },
-    groom: { name: 'T. Manoj', parents: 'Sri & Smt. T. Ramalingam' },
+    bride: { name: 'T. Haarika', parents: 'Sri & Smt. T. Venkateshwarlu' },
+    groom: { name: 'B. Manoj', parents: 'Sri & Smt. B. Ramalingam' },
   },
 
   familyMessage:
@@ -83,7 +83,7 @@ const config = {
         src: '/media/couple-animation.mp4',
         poster: '/media/couple-poster.jpg',
         aspect: 0.5625,
-        alt: 'T. Harrika & T. Manoj Celebration',
+        alt: 'T. Haarika & B. Manoj Celebration',
         caption: 'Our Beautiful Journey Together',
       },
       {

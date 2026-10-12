@@ -23,7 +23,7 @@ const PreInvitationCard = forwardRef(function PreInvitationCard({ onOpen, hidden
       onClick={handleClick}
       role="dialog"
       aria-modal="true"
-      aria-label="Wedding Invitation of T. Harrika and T. Manoj"
+      aria-label="Wedding Invitation of T. Haarika and B. Manoj"
     >
       <article className="precard">
         <Corner className="card__corner card__corner--tl" />

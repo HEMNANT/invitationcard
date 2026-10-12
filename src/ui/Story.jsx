@@ -126,7 +126,7 @@ export default function Story({ reduced }) {
                 <img
                   key={item.frame}
                   src={`/media/frames/${item.file}`}
-                  alt={`T. Harrika & T. Manoj - ${item.title}`}
+                  alt={`T. Haarika & B. Manoj - ${item.title}`}
                   loading="eager"
                   decoding="async"
                   className="story-frame-card__img"
