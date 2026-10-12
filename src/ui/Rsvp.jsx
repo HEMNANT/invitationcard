@@ -121,6 +121,22 @@ export default function Rsvp({ reduced }) {
           )}
         </form>
 
+        <div className="rsvp-contact-box" data-reveal>
+          <p className="rsvp-contact-title">Direct Family Contacts · Kurnool</p>
+          <p className="rsvp-contact-host">Smt. Lakshmi Devi &amp; Sri T. Maddileti</p>
+          <div className="rsvp-phone-pills">
+            <a href="tel:9052299991" className="phone-pill">
+              <span>📞 9052299991</span>
+            </a>
+            <a href="tel:9703126351" className="phone-pill">
+              <span>📞 9703126351</span>
+            </a>
+            <a href="tel:8309686719" className="phone-pill">
+              <span>📞 8309686719</span>
+            </a>
+          </div>
+        </div>
+
         <div className="share" data-reveal>
           <p className="eyebrow">Share the invitation</p>
           <div className="share__row">
@@ -131,7 +147,7 @@ export default function Rsvp({ reduced }) {
         </div>
 
         <p className="footer" data-reveal>
-          With love and blessings · {config.couple.bride.name} &amp; {config.couple.groom.name}
+          With best compliments from Near &amp; Dear · {config.couple.bride.name} &amp; {config.couple.groom.name}
         </p>
       </div>
     </section>

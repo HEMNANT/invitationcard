@@ -86,7 +86,7 @@ export default function CoupleInviteReveal({ reduced }) {
               <p className="couple-frame__deva" lang="sa">
                 ॥ శ్రీ సీతారామ కళ్యాణ వైభోగమే ॥ · ॥ श्री सीता राम कल्याणम् ॥
               </p>
-              <p className="couple-frame__eyebrow">Together With Our Families</p>
+              <p className="couple-frame__eyebrow">Mekaboyina Family Solicits Your Presence</p>
               <h3 className="couple-frame__invite-text">We Are Cordially Inviting You!</h3>
               <p className="couple-frame__names">
                 <span>{bride.name}</span>

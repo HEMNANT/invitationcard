@@ -24,9 +24,9 @@ export default function Hero({ reduced, contentVisible }) {
     <section id="hero" ref={ref} className="section hero" data-section aria-label="Welcome">
       <div className={`hero__text ${isVisible ? 'is-visible' : 'is-hidden'}`}>
         <p className="hero__deva" lang="sa">
-          ॥ श्री गणेशाय नमः ॥ · ॥ श्री सीता राम कल्याणम् ॥
+          ॥ श्री गणेशाय नमः ॥ · ॥ శ్రీ సీతారామ కళ్యాణ వైభోగమే ॥
         </p>
-        <p className="eyebrow">Together with their families</p>
+        <p className="eyebrow">Mekaboyina Family Solicits Your Gracious Presence</p>
         <h2 className="hero__names">
           <span>{bride.name}</span>
           <i aria-hidden="true">&amp;</i>

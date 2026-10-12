@@ -14,25 +14,54 @@
  */
 const config = {
   meta: {
-    title: 'Wedding Invitation',
-    shareMessage: 'You are warmly invited to our wedding. Please open the invitation:',
+    title: 'Dr. T. Haarika & B. Manoj Kumar · Wedding Invitation',
+    shareMessage:
+      'We cordially invite you to the wedding of Dr. T. Haarika & B. Manoj Kumar. Please open our digital invitation:',
     siteUrl: '', // leave empty to use the current page address
   },
 
+  familyBanner: "Mekaboyina Family's Wedding Invitation",
+  traditionalHeader: {
+    left: 'Srimathu !',
+    right: 'Subhamasthu !!',
+  },
+
   couple: {
-    bride: { name: 'T. Haarika', parents: 'Sri & Smt. T. Venkateshwarlu' },
-    groom: { name: 'B. Manoj', parents: 'Sri & Smt. B. Ramalingam' },
+    bride: {
+      name: 'Dr. T. Haarika',
+      fullName: 'Chi. La. Sow. Dr. T. Haarika',
+      degree: 'B.D.S.',
+      relation: 'Eldest Daughter',
+      parents: 'Smt. Lakshmi Devi & Sri T. Maddileti',
+      address: 'H.No. 45/24-R-30-R-B, Srinagar Colony, KURNOOL.',
+    },
+    groom: {
+      name: 'B. Manoj Kumar',
+      fullName: 'Chi. B. Manoj Kumar',
+      degree: 'B.Tech.',
+      profession: 'Software Engineer',
+      relation: 'Eldest Son',
+      parents: 'Smt. B. Parimala & Sri B. Bhogesh',
+      address: 'Guntakal, Ananthapur Dt.',
+    },
   },
 
   familyMessage:
-    'With the divine blessings of Sri Sita Rama and our elders, we cordially request the honor of your gracious presence to bless the wedding union of our children.',
+    'We solicit your gracious presence with family and friends on the auspicious occasion of the marriage of our eldest daughter',
+
+  cordiallyInvitedBy: {
+    parents: 'Smt. Lakshmi Devi, Sri T. Maddileti',
+    address: 'H.No. 45/24-R-30-R-B, Srinagar Colony, KURNOOL.',
+    phones: ['9052299991', '9703126351', '8309686719'],
+    compliments: 'With best compliments from : Near & Dear.',
+  },
 
   /** UTC offset of the wedding venue's local time. India: "+05:30". */
   utcOffset: '+05:30',
 
   /**
-   * Events. Set `enabled: false` to hide one. Exactly one event should have
-   * `main: true` — it drives the hero date, the invitation card and the countdown.
+   * Events.
+   * Exactly one event should have `main: true` — it drives the hero date, the invitation card and the countdown.
    * date: "YYYY-MM-DD"   time: "HH:MM" (24h, venue local time)
    */
   events: [
@@ -52,15 +81,15 @@ const config = {
     },
     {
       id: 'haldi',
-      enabled: true,
+      enabled: false,
       title: 'Haldi Ceremony',
       teluguTitle: 'పసుపు వేడుక & మంగళస్నానం',
       date: '2026-10-29',
       time: '10:00',
       durationMinutes: 180,
-      venue: 'Sri Kalyana Vedika',
-      address: 'Hyderabad',
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sri+Kalyana+Vedika+Hyderabad',
+      venue: 'Srinagar Colony Residence',
+      address: 'Kurnool',
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Srinagar+Colony+Kurnool',
       attire: 'Festive Yellow · Kurta & Traditional Pattu',
       note: 'Traditional yellow festive attire & Mangalasnanam',
     },
@@ -82,16 +111,17 @@ const config = {
       id: 'muhurtham',
       enabled: true,
       main: true,
-      title: 'Wedding Muhurtham',
+      title: 'Sumuhurtham',
       teluguTitle: 'కళ్యాణ సుముహూర్తం',
       date: '2026-10-30',
-      time: '09:15',
+      time: '09:31',
       durationMinutes: 240,
-      venue: 'Sri Kalyana Mandapam',
-      address: 'Hyderabad',
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sri+Kalyana+Mandapam+Hyderabad',
+      venue: 'Gayathri Function Hall',
+      address: 'Alur Road, GUNTAKAL',
+      mapsUrl:
+        'https://www.google.com/maps/search/?api=1&query=Gayathri+Function+Hall+Alur+Road+Guntakal',
       attire: 'Traditional Kanjeevaram Silk & Dhoti Kurta',
-      note: 'Sumuhurtham: The sacred wedding ceremony',
+      note: 'Sumuhurtham: On Friday 30th October 2026 at 09:31 a.m.',
     },
     {
       id: 'reception',
@@ -99,24 +129,30 @@ const config = {
       title: 'Grand Reception',
       teluguTitle: 'శుభ విందు & రిసెప్షన్',
       date: '2026-11-01',
-      time: '19:00',
+      time: '11:45',
       durationMinutes: 240,
-      venue: 'Grand Imperial Convention',
-      address: 'Hyderabad',
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Grand+Imperial+Convention+Hyderabad',
-      attire: 'Royal Evening Formals & Grand Indo-Western',
-      note: 'Join us for evening feast, music & blessings',
+      venue: 'Imperial Convention',
+      address: 'Near Maza Masjid, Sunkesula Road, KURNOOL',
+      mapsUrl:
+        'https://www.google.com/maps/search/?api=1&query=Imperial+Convention+Sunkesula+Road+Kurnool',
+      attire: 'Royal Festive Silks & Grand Indo-Western',
+      note: 'On Sunday 01-11-2026 at 11:45 a.m. onwards · Auspicious Lunch Feast',
     },
   ],
 
   /**
    * RSVP.
-   *  endpoint:        URL that accepts a JSON POST (see server/rsvp-server.mjs, or any form backend).
-   *  whatsappNumber:  digits only with country code, e.g. "919XXXXXXXXX". Used as a fallback
-   *                   when no endpoint is configured.
-   * If neither is set the form says RSVP is not enabled — it never fakes a success.
    */
-  rsvp: { endpoint: '', whatsappNumber: '919876543210', deadline: '2026-10-25' },
+  rsvp: {
+    endpoint: '',
+    whatsappNumber: '919052299991',
+    deadline: '2026-10-25',
+    contacts: [
+      { name: 'Sri T. Maddileti', phone: '9052299991' },
+      { name: 'Family Contact', phone: '9703126351' },
+      { name: 'Family Contact', phone: '8309686719' },
+    ],
+  },
 
   /**
    * Music is OFF until the guest taps the speaker button.

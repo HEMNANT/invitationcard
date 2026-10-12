@@ -69,17 +69,13 @@ const PreInvitationCard = forwardRef(function PreInvitationCard({ onOpen, hidden
         </div>
 
         <div className="precard__dates">
-          <div className="precard__date-pill">
-            <span className="pill-title">Haldi</span>
-            <span className="pill-val">29 Oct 2026</span>
-          </div>
           <div className="precard__date-pill precard__date-pill--main">
-            <span className="pill-title">Muhurtham</span>
-            <span className="pill-val">30 Oct 2026</span>
+            <span className="pill-title">Sumuhurtham · Guntakal</span>
+            <span className="pill-val">30 Oct 2026 · 09:31 AM</span>
           </div>
           <div className="precard__date-pill">
-            <span className="pill-title">Reception</span>
-            <span className="pill-val">01 Nov 2026</span>
+            <span className="pill-title">Reception · Kurnool</span>
+            <span className="pill-val">01 Nov 2026 · 11:45 AM</span>
           </div>
         </div>
 
