@@ -108,9 +108,9 @@ export default function InvitationCard({ reduced }) {
           <p className="invited-by__address">H.No. 45/24-R-30-R-B, Srinagar Colony, KURNOOL.</p>
           <p className="invited-by__phones">
             <span>Cell: </span>
+            <a href="tel:9332511111">+91 93325 11111</a>,{' '}
             <a href="tel:9052299991">9052299991</a>,{' '}
-            <a href="tel:9703126351">9703126351</a>,{' '}
-            <a href="tel:8309686719">8309686719</a>
+            <a href="tel:9703126351">9703126351</a>
           </p>
           <p className="card__small card__small--compliments">With best compliments from : Near &amp; Dear.</p>
         </div>

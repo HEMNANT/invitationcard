@@ -125,14 +125,14 @@ export default function Rsvp({ reduced }) {
           <p className="rsvp-contact-title">Direct Family Contacts · Kurnool</p>
           <p className="rsvp-contact-host">Smt. Lakshmi Devi &amp; Sri T. Maddileti</p>
           <div className="rsvp-phone-pills">
+            <a href="tel:9332511111" className="phone-pill phone-pill--primary">
+              <span>📞 +91 93325 11111</span>
+            </a>
             <a href="tel:9052299991" className="phone-pill">
               <span>📞 9052299991</span>
             </a>
             <a href="tel:9703126351" className="phone-pill">
               <span>📞 9703126351</span>
-            </a>
-            <a href="tel:8309686719" className="phone-pill">
-              <span>📞 8309686719</span>
             </a>
           </div>
         </div>

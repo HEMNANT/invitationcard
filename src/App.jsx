@@ -5,6 +5,7 @@ import { detect } from './lib/capabilities.js'
 import { useMusic } from './hooks/useMusic.js'
 import PreInvitationCard from './ui/PreInvitationCard.jsx'
 import TempleDoorOpening from './ui/TempleDoorOpening.jsx'
+import ThreeScrollAtmosphere from './three/ThreeScrollAtmosphere.jsx'
 import Hero from './ui/Hero.jsx'
 import Story from './ui/Story.jsx'
 import InvitationCard from './ui/InvitationCard.jsx'
@@ -68,6 +69,9 @@ export default function App() {
 
   return (
     <>
+      {/* 3D Three.js Scroll-Driven Atmosphere (Golden Akshata, Rose Petals, Sacred Torus) */}
+      {opened && <ThreeScrollAtmosphere />}
+
       {/* 300-Frame Temple Door Opening Backdrop (Single-time animation, NO LOOP) */}
       <div className="temple-bg-stage" aria-hidden="true">
         <TempleDoorOpening

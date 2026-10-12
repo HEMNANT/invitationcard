@@ -1339,9 +1339,35 @@ html.is-flat body {
   transform: translateY(-1px);
 }
 
+.phone-pill--primary {
+  background: linear-gradient(135deg, #ffffff 0%, #fffbf0 60%, #faecd0 100%);
+  border: 1.5px solid var(--gold);
+  color: var(--maroon);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(180, 140, 70, 0.2), 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
 .share { margin-top: 2.2rem; display: grid; gap: 0.7rem; justify-items: center; }
 .share__row { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
 .footer { margin-top: 1.8rem; font-style: italic; color: var(--text-muted); }
+
+/* ───────── Three.js 3D Scroll-Driven Atmosphere ───────── */
+.three-scroll-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.9;
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
+}
+
+.three-scroll-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  pointer-events: none;
+}
 
 /* controls */
 .controls { position: fixed; z-index: 30; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); display: grid; gap: 0.5rem; }

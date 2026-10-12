@@ -52,7 +52,7 @@ const config = {
   cordiallyInvitedBy: {
     parents: 'Smt. Lakshmi Devi, Sri T. Maddileti',
     address: 'H.No. 45/24-R-30-R-B, Srinagar Colony, KURNOOL.',
-    phones: ['9052299991', '9703126351', '8309686719'],
+    phones: ['9332511111', '9052299991', '9703126351', '8309686719'],
     compliments: 'With best compliments from : Near & Dear.',
   },
 
@@ -145,9 +145,10 @@ const config = {
    */
   rsvp: {
     endpoint: '',
-    whatsappNumber: '919052299991',
+    whatsappNumber: '919332511111',
     deadline: '2026-10-25',
     contacts: [
+      { name: 'Primary Cell / WhatsApp', phone: '9332511111' },
       { name: 'Sri T. Maddileti', phone: '9052299991' },
       { name: 'Family Contact', phone: '9703126351' },
       { name: 'Family Contact', phone: '8309686719' },
