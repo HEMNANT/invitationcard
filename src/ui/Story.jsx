@@ -34,27 +34,34 @@ export default function Story({ reduced }) {
   useEffect(() => {
     if (reduced) return
 
+    let ticking = false
     const handleScroll = () => {
-      const el = containerRef.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      const totalScrollable = el.offsetHeight - window.innerHeight
-      if (totalScrollable <= 0) return
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          ticking = false
+          const el = containerRef.current
+          if (!el) return
+          const rect = el.getBoundingClientRect()
+          const totalScrollable = el.offsetHeight - window.innerHeight
+          if (totalScrollable <= 0) return
 
-      // Distance scrolled into the container
-      const currentScroll = -rect.top
-      if (currentScroll < 0) {
-        setIndex(0)
-        return
-      }
-      if (currentScroll >= totalScrollable) {
-        setIndex(STORY_FRAMES.length - 1)
-        return
-      }
+          // Distance scrolled into the container
+          const currentScroll = -rect.top
+          if (currentScroll < 0) {
+            setIndex((prev) => (prev !== 0 ? 0 : prev))
+            return
+          }
+          if (currentScroll >= totalScrollable) {
+            setIndex((prev) => (prev !== STORY_FRAMES.length - 1 ? STORY_FRAMES.length - 1 : prev))
+            return
+          }
 
-      const progress = Math.max(0, Math.min(0.999, currentScroll / totalScrollable))
-      const targetIdx = Math.floor(progress * STORY_FRAMES.length)
-      setIndex(targetIdx)
+          const progress = Math.max(0, Math.min(0.999, currentScroll / totalScrollable))
+          const targetIdx = Math.floor(progress * STORY_FRAMES.length)
+          setIndex((prev) => (prev !== targetIdx ? targetIdx : prev))
+        })
+        ticking = true
+      }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -107,20 +114,35 @@ export default function Story({ reduced }) {
           </div>
         </header>
 
-        {/* Centerpiece Photo Card */}
+        {/* Centerpiece Photo Card - GPU composited layer */}
         <div className="story-solo-stage" role="region" aria-label="Couple photo frame" tabIndex={0}>
-          <article className="story-frame-card story-frame-card--solo" key={current.frame}>
+          <article className="story-frame-card story-frame-card--solo">
             <Corner className="card__corner card__corner--tl" />
             <Corner className="card__corner card__corner--tr" />
             <Corner className="card__corner card__corner--bl" />
             <Corner className="card__corner card__corner--br" />
-            <div className="story-frame-card__img-wrap">
-              <img
-                src={`/media/frames/${current.file}`}
-                alt={`T. Harrika & T. Manoj - ${current.title}`}
-                loading="eager"
-                className="story-frame-card__img story-frame-card__img--animated"
-              />
+            <div className="story-frame-card__img-wrap" style={{ position: 'relative' }}>
+              {STORY_FRAMES.map((item, i) => (
+                <img
+                  key={item.frame}
+                  src={`/media/frames/${item.file}`}
+                  alt={`T. Harrika & T. Manoj - ${item.title}`}
+                  loading="eager"
+                  decoding="async"
+                  className="story-frame-card__img"
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: i === index ? 1 : 0,
+                    pointerEvents: i === index ? 'auto' : 'none',
+                    transition: 'opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                    willChange: 'opacity',
+                  }}
+                />
+              ))}
               <div className="story-frame-card__overlay">
                 <span className="story-frame-card__badge">{current.label}</span>
                 <h3 className="story-frame-card__title">{current.title}</h3>

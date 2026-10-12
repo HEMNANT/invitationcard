@@ -44,7 +44,7 @@ export default function CoupleInviteReveal({ reduced }) {
 
     ctx.clearRect(0, 0, cw, ch)
     ctx.imageSmoothingEnabled = true
-    ctx.imageSmoothingQuality = 'high'
+    ctx.imageSmoothingQuality = 'medium'
 
     // Cover fit
     const iw = img.naturalWidth
@@ -75,11 +75,11 @@ export default function CoupleInviteReveal({ reduced }) {
     imgs[0] = img1
     imagesRef.current = imgs
 
-    // Gently stream remaining frames in small idle batches without competing with opening animation
+    // Gently stream remaining frames in lightweight idle batches
     const loadRemaining = () => {
       if (!active) return
       let idx = 2
-      const batchSize = 4
+      const batchSize = 6
 
       const nextBatch = () => {
         if (!active || idx > TOTAL_FRAMES) return
@@ -91,17 +91,17 @@ export default function CoupleInviteReveal({ reduced }) {
         }
         if (idx <= TOTAL_FRAMES) {
           if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(nextBatch, { timeout: 600 })
+            window.requestIdleCallback(nextBatch, { timeout: 400 })
           } else {
-            setTimeout(nextBatch, 120)
+            setTimeout(nextBatch, 80)
           }
         }
       }
       nextBatch()
     }
 
-    // Delay background fetch by 3s so temple doors and audio get 100% bandwidth initially
-    const idleTimer = setTimeout(loadRemaining, 3000)
+    // Delay background fetch by 1.5s so temple doors and audio get initial priority
+    const idleTimer = setTimeout(loadRemaining, 1500)
 
     return () => {
       active = false
@@ -109,13 +109,13 @@ export default function CoupleInviteReveal({ reduced }) {
     }
   }, [drawFrame])
 
-  // Canvas high-DPI sizing on mount and resize
+  // Canvas high-DPI sizing on mount and resize (capped at 1.5 DPR for low-end mobile fluidity)
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
     const resizeCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 3)
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
       const rect = canvas.getBoundingClientRect()
       const w = rect.width || 360
       const h = rect.height || 640
