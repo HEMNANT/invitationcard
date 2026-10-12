@@ -29,10 +29,16 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-# Raw media working dumps (optimized frames are in public/media/)
+# Raw media working dumps
 templteDoor/
 ezgif-23c04ba1538d0342-png-split/
 wedding-invitation/
-backgroundSong.wav
-*.mp4
-Rama and Sita*.png
+
+# Root loose files only (do not ignore assets in public/media)
+/backgroundSong.wav
+/backgroundSong.mp3
+/*.mp4
+/Rama and Sita*.png
+
+# Always track media in public
+!public/media/**

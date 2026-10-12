@@ -13,20 +13,43 @@ import config from '../config/wedding.config.js'
 export function useMusic(opened = false) {
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef(null)
-  const targetVolume = typeof config.music?.volume === 'number' ? config.music?.volume : 0.28
+  const targetVolume = typeof config.music?.volume === 'number' ? config.music?.volume : 0.32
 
-  const getAudio = useCallback(() => {
-    if (!audioRef.current && config.music?.src) {
-      const audio = new Audio(config.music.src)
-      audio.loop = true
-      audio.volume = targetVolume
-      audioRef.current = audio
+  // Instantiate and preload audio immediately on mount
+  useEffect(() => {
+    if (!config.music?.src) return
+
+    const audio = new Audio(config.music.src)
+    audio.loop = true
+    audio.volume = targetVolume
+    audio.preload = 'auto'
+    audioRef.current = audio
+
+    // Attempt instant autoplay on mount (works if browser allows or user has visited)
+    audio.play().then(() => {
+      setIsPlaying(true)
+    }).catch(() => {
+      // Autoplay blocked until user gesture: listen for the very first interaction anywhere
+      const unlockAudio = () => {
+        audio.play().then(() => {
+          setIsPlaying(true)
+        }).catch(() => {})
+      }
+
+      window.addEventListener('pointerdown', unlockAudio, { once: true, capture: true })
+      window.addEventListener('touchstart', unlockAudio, { once: true, capture: true })
+      window.addEventListener('click', unlockAudio, { once: true, capture: true })
+      window.addEventListener('keydown', unlockAudio, { once: true, capture: true })
+    })
+
+    return () => {
+      audio.pause()
+      audioRef.current = null
     }
-    return audioRef.current
   }, [targetVolume])
 
   const play = useCallback(async () => {
-    const audio = getAudio()
+    const audio = audioRef.current
     if (!audio) return false
     try {
       audio.volume = targetVolume
@@ -34,11 +57,10 @@ export function useMusic(opened = false) {
       setIsPlaying(true)
       return true
     } catch {
-      // Autoplay blocked until user gesture
       setIsPlaying(false)
       return false
     }
-  }, [getAudio, targetVolume])
+  }, [targetVolume])
 
   const stop = useCallback(() => {
     if (audioRef.current) {
@@ -47,23 +69,10 @@ export function useMusic(opened = false) {
     }
   }, [])
 
-  // Start playing as soon as invitation is opened
+  // When invitation is opened, make sure music is playing
   useEffect(() => {
-    if (!opened) return
-
-    play()
-
-    // Fallback: in case browser required an additional user gesture
-    const resumeOnInteraction = () => {
+    if (opened) {
       play()
-    }
-
-    window.addEventListener('pointerdown', resumeOnInteraction, { once: true })
-    window.addEventListener('keydown', resumeOnInteraction, { once: true })
-
-    return () => {
-      window.removeEventListener('pointerdown', resumeOnInteraction)
-      window.removeEventListener('keydown', resumeOnInteraction)
     }
   }, [opened, play])
 
@@ -73,23 +82,13 @@ export function useMusic(opened = false) {
       if (!audioRef.current) return
       if (document.hidden) {
         audioRef.current.pause()
-      } else if (opened) {
+      } else if (opened || isPlaying) {
         audioRef.current.play().catch(() => {})
       }
     }
     document.addEventListener('visibilitychange', onVisibility)
     return () => document.removeEventListener('visibilitychange', onVisibility)
-  }, [opened])
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
-    }
-  }, [])
+  }, [opened, isPlaying])
 
   return { isPlaying, play, stop }
 }

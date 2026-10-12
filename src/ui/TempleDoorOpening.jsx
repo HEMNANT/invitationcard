@@ -69,9 +69,8 @@ export default function TempleDoorOpening({ active = true, onFrame113 }) {
       video.currentTime = 0
       const playPromise = video.play()
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Fallback to canvas if video autoplay is blocked
-          setUseCanvas(true)
+        playPromise.catch((err) => {
+          console.warn('Temple door video play notice:', err)
         })
       }
     } else {
@@ -144,14 +143,15 @@ export default function TempleDoorOpening({ active = true, onFrame113 }) {
         <video
           ref={videoRef}
           className="temple-door-video"
-          src="/media/temple-doors.mp4"
           playsInline
           muted
           preload="auto"
+          poster="/media/temple-doors/f-001.jpg"
           onTimeUpdate={handleTimeUpdate}
           onEnded={handleEnded}
-          onError={() => setUseCanvas(true)}
-        />
+        >
+          <source src="/media/temple-doors.mp4" type="video/mp4" />
+        </video>
       ) : (
         <canvas
           ref={canvasRef}

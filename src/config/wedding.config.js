@@ -57,7 +57,7 @@ const config = {
    * Leave `src` empty to use the built-in soft generated drone, or point it at a
    * licensed audio file such as "/media/nadaswaram.mp3".
    */
-  music: { src: '/media/backgroundSong.wav', volume: 0.28, label: 'Mangala Vaidyam' },
+  music: { src: '/media/backgroundSong.mp3', volume: 0.32, label: 'Mangala Vaidyam' },
 
   media: {
     /** Main centrepiece frame in the mandap: Sri Sita Rama Kalyanam. */
