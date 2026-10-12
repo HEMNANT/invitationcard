@@ -84,13 +84,13 @@ export default function CoupleInviteReveal({ reduced }) {
           >
             <div className="couple-frame__content">
               <p className="couple-frame__deva" lang="sa">
-                ॥ శ్రీ సీతారామ కళ్యాణ వైభోగమే ॥ · ॥ श्री सीता राम कल्याणम् ॥
+                ॥ శ్రీ సీతారామ కళ్యాణ వైభోగమే ॥
               </p>
               <p className="couple-frame__eyebrow">Mekaboyina Family Solicits Your Presence</p>
               <h3 className="couple-frame__invite-text">We Are Cordially Inviting You!</h3>
               <p className="couple-frame__names">
                 <span>{bride.name}</span>
-                <i>&amp;</i>
+                <i className="couple-frame__amp">&amp;</i>
                 <span>{groom.name}</span>
               </p>
 
@@ -99,7 +99,10 @@ export default function CoupleInviteReveal({ reduced }) {
                 {events.map((ev) => (
                   <div key={ev.id} className="couple-frame__date-badge">
                     <span className="badge-title">{ev.title}</span>
-                    <span className="badge-val">{formatDate(ev.date)}</span>
+                    <span className="badge-val">
+                      {formatDate(ev.date, { weekday: 'short', day: 'numeric', month: 'short' })}
+                      {ev.time ? ` · ${ev.time}` : ''}
+                    </span>
                   </div>
                 ))}
               </div>
