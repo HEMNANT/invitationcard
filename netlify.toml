@@ -2,6 +2,12 @@
   command = "npm run build"
   publish = "dist"
 
+# Do not route media requests to index.html SPA fallback
+[[redirects]]
+  from = "/media/*"
+  to = "/media/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -15,4 +21,4 @@
 [[headers]]
   for = "/media/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=3600, must-revalidate"
