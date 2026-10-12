@@ -19,7 +19,6 @@ export default function CoupleInviteReveal({ reduced }) {
   const canvasRef = useRef(null)
   const overlayRef = useRef(null)
   const barRef = useRef(null)
-  const hintRef = useRef(null)
   const imagesRef = useRef([])
   const currentFrameRef = useRef(1)
   const lastDrawnIndexRef = useRef(-1)
@@ -129,9 +128,6 @@ export default function CoupleInviteReveal({ reduced }) {
 
     if (barRef.current) {
       barRef.current.style.width = `${(clamped / TOTAL_FRAMES) * 100}%`
-    }
-    if (hintRef.current) {
-      hintRef.current.style.opacity = clamped >= TOTAL_FRAMES - 2 ? '0' : '1'
     }
   }, [drawFrame])
 
@@ -280,13 +276,6 @@ export default function CoupleInviteReveal({ reduced }) {
             />
           </div>
         </div>
-
-        <p
-          ref={hintRef}
-          className="couple-frame__scroll-hint"
-        >
-          ↓ Scroll to reveal personal invitation
-        </p>
       </div>
     </section>
   )
