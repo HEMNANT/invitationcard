@@ -84,7 +84,7 @@ export default function CoupleInviteReveal({ reduced }) {
           >
             <div className="couple-frame__content">
               <p className="couple-frame__deva" lang="sa">
-                ॥ श्री सीता राम कल्याणम् ॥
+                ॥ శ్రీ సీతారామ కళ్యాణ వైభోగమే ॥ · ॥ श्री सीता राम कल्याणम् ॥
               </p>
               <p className="couple-frame__eyebrow">Together With Our Families</p>
               <h3 className="couple-frame__invite-text">We Are Cordially Inviting You!</h3>
@@ -104,6 +104,33 @@ export default function CoupleInviteReveal({ reduced }) {
                 ))}
               </div>
 
+              {/* Quick WhatsApp Wishes Preset Picker */}
+              <div className="couple-frame__wishes-picker">
+                <p className="wishes-picker__label">✨ Tap a blessing to send on WhatsApp:</p>
+                <div className="wishes-picker__pills">
+                  <a
+                    href={`https://wa.me/${config.rsvp.whatsappNumber || '919876543210'}?text=${encodeURIComponent(
+                      `🪔 Sita Rama Kalyanam Vaibhogame! Heartiest congratulations to ${bride.name} & ${groom.name} on your wedding!`
+                    )}`}
+                    className="wish-pill"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>🪔 Sita Rama Kalyanam Vaibhogame!</span>
+                  </a>
+                  <a
+                    href={`https://wa.me/${config.rsvp.whatsappNumber || '919876543210'}?text=${encodeURIComponent(
+                      `💖 Wishing a lifetime of love, joy and prosperity to ${bride.name} & ${groom.name}!`
+                    )}`}
+                    className="wish-pill"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>💖 Wishing you eternal joy &amp; love!</span>
+                  </a>
+                </div>
+              </div>
+
               <div className="couple-frame__actions">
                 <a
                   href={`https://wa.me/${config.rsvp.whatsappNumber || '919876543210'}?text=${encodeURIComponent(
@@ -113,10 +140,10 @@ export default function CoupleInviteReveal({ reduced }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span>Send Wishes on WhatsApp</span>
+                  <span>💬 Custom Message on WhatsApp</span>
                 </a>
                 <a href="#ceremonies" className="btn btn--ghost btn--small">
-                  <span>Ceremony Details</span>
+                  <span>🗺️ Ceremony Details &amp; Maps</span>
                 </a>
               </div>
             </div>

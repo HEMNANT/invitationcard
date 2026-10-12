@@ -36,7 +36,10 @@ function EventCard({ ev }) {
     <li className={`event ${eventModifier}`} data-reveal data-ceremony={ev.id}>
       <span className="event__dot" aria-hidden="true">{isMuhurtham ? <Diya /> : <Lotus />}</span>
       <div className="event__body">
-        <span className="event__badge">{ceremonyBadge}</span>
+        <div className="event__header-row">
+          <span className="event__badge">{ceremonyBadge}</span>
+          {ev.teluguTitle && <span className="event__telugu-badge">{ev.teluguTitle}</span>}
+        </div>
         <h3>{ev.title}</h3>
         <p className="event__when">
           <span>{date || '[Date]'}</span>
@@ -46,20 +49,32 @@ function EventCard({ ev }) {
           <strong>{ev.venue || '[Venue]'}</strong>
           {ev.address ? <><br />{ev.address}</> : null}
         </p>
+        {ev.attire && (
+          <div className="event__attire">
+            <span className="attire-pill">
+              <span className="attire-icon">🥻</span>
+              <strong className="attire-label">Attire Guide:</strong> {ev.attire}
+            </span>
+          </div>
+        )}
         {ev.note && <p className="event__note">{ev.note}</p>}
         <div className="event__actions">
-          {dir ? (
-            <a className="btn btn--small" href={dir} target="_blank" rel="noopener noreferrer">Directions</a>
+          {(ev.mapsUrl || dir) ? (
+            <a className="btn btn--small btn--gold" href={ev.mapsUrl || dir} target="_blank" rel="noopener noreferrer">
+              <span>🗺️ Venue Directions</span>
+            </a>
           ) : (
             <button type="button" className="btn btn--small" disabled title="Venue not set yet">Directions</button>
           )}
-          {calendar ? (
-            <>
-              <button type="button" className="btn btn--small btn--ghost" onClick={() => downloadIcs(ev)}>Add to Calendar</button>
-              {gcal && <a className="link" href={gcal} target="_blank" rel="noopener noreferrer">Google Calendar</a>}
-            </>
-          ) : (
-            <button type="button" className="btn btn--small btn--ghost" disabled title="Date not set yet">Add to Calendar</button>
+          {gcal && (
+            <a className="btn btn--small btn--ghost" href={gcal} target="_blank" rel="noopener noreferrer">
+              <span>📅 Google Calendar</span>
+            </a>
+          )}
+          {calendar && (
+            <button type="button" className="btn btn--small btn--ghost" onClick={() => downloadIcs(ev)}>
+              <span>🍏 Apple Calendar</span>
+            </button>
           )}
         </div>
       </div>

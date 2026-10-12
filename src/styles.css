@@ -1,18 +1,22 @@
-/* ───────── tokens: Royal White & Gold Wedding Aesthetic ───────── */
+/* ───────── tokens: Regal Palace Wedding Aesthetic (24k Gold, Kumkuma Crimson, Ivory Silk) ───────── */
 :root {
-  --maroon: #b8860b; /* royal antique gold / rich dark gold */
-  --maroon-deep: #8c6a2c;
-  --gold: #d4af37; /* vibrant 24k temple gold */
+  --maroon: #801426; /* Auspicious Royal Kumkuma Crimson */
+  --maroon-deep: #540b17;
+  --maroon-light: #fbecee;
+  --gold: #d4af37; /* Radiant 24k Temple Gold */
   --gold-soft: #b8860b;
-  --gold-bright: #f5cb68;
-  --gold-light: #fef5de;
-  --ivory: #ffffff; /* pristine pure white */
+  --gold-bright: #fcd97d;
+  --gold-light: #fff9eb;
+  --gold-deep: #966f18;
+  --emerald: #245233; /* Emerald Pattu Garland Accent */
+  --emerald-light: #eef7f1;
+  --ivory: #ffffff; /* Pristine Pearl Ivory */
   --white: #ffffff;
-  --cream: #fbf8f2;
-  --brown: #332419;
-  --charcoal: #faf7f2; /* luminous serene white canvas background */
-  --text-main: #2c2017; /* high contrast dark bronze/umber */
-  --text-muted: #5e4a3b;
+  --cream: #fbf7ee; /* Rich Royal Silk Canvas */
+  --brown: #241812;
+  --charcoal: #faf6ee; /* Serene Luminous Canvas */
+  --text-main: #231812; /* High-contrast Umber Bronze */
+  --text-muted: #5e4738;
   --serif: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
   --deva: 'Tiro Devanagari Hindi', 'Noto Serif Devanagari', 'Nirmala UI', serif;
   --gutter: max(18px, env(safe-area-inset-left));
@@ -219,6 +223,86 @@ html.is-flat body {
 
 .precard__divider {
   margin: 0.2rem auto;
+}
+
+/* ───────── 3D Royal Monogram Wax Seal ───────── */
+.wax-seal-wrapper {
+  margin: 0.5rem auto 0.4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.wax-seal {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #a61c30 0%, #750e1e 65%, #4a0712 100%);
+  box-shadow:
+    0 8px 24px rgba(117, 14, 30, 0.45),
+    0 0 0 2px rgba(212, 175, 55, 0.75),
+    inset 0 3px 6px rgba(255, 255, 255, 0.35),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: waxSealPulse 3.5s ease-in-out infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wax-seal:hover {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow:
+    0 12px 30px rgba(117, 14, 30, 0.6),
+    0 0 0 3px var(--gold-bright);
+}
+
+@keyframes waxSealPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+.wax-seal__outer {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px dashed rgba(252, 217, 125, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wax-seal__ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.wax-seal__laurel {
+  font-size: 0.55rem;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.wax-seal__monogram {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  color: #fae08c;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 8px rgba(212, 175, 55, 0.6);
+  line-height: 1;
+}
+
+.wax-seal__heart {
+  font-size: 0.7em;
+  color: #ff6b7d;
+  filter: drop-shadow(0 0 4px #ff3355);
 }
 
 .precard__dates {
@@ -936,6 +1020,14 @@ html.is-flat body {
   box-shadow: 0 12px 32px rgba(180, 140, 70, 0.18);
 }
 
+.event__header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+
 .event__badge {
   display: inline-block;
   font-size: 0.65rem;
@@ -943,7 +1035,44 @@ html.is-flat body {
   text-transform: uppercase;
   color: var(--gold-deep);
   font-weight: 700;
-  margin-bottom: 0.3rem;
+}
+
+.event__telugu-badge {
+  font-family: var(--deva);
+  font-size: 0.8rem;
+  color: var(--gold-deep);
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.event__attire {
+  margin: 0.55rem 0 0.35rem;
+}
+
+.attire-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--text-main);
+  background: rgba(36, 82, 51, 0.08);
+  border: 1px solid rgba(36, 82, 51, 0.28);
+  border-radius: 4px;
+  padding: 0.22rem 0.6rem;
+  line-height: 1.3;
+}
+
+.attire-icon {
+  font-size: 0.95rem;
+}
+
+.attire-label {
+  color: #1a4d2e;
+  font-weight: 600;
 }
 
 /* Haldi Ceremony */
@@ -1210,6 +1339,52 @@ html.is-flat body {
   font-weight: 600;
 }
 
+.couple-frame__wishes-picker {
+  margin: 0.35rem 0 0.25rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.wishes-picker__label {
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  color: #fae08c;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.wishes-picker__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.wish-pill {
+  font-size: 0.68rem;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(245, 203, 104, 0.45);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.wish-pill:hover,
+.wish-pill:focus-visible {
+  background: rgba(212, 175, 55, 0.35);
+  border-color: var(--gold-bright);
+  transform: translateY(-1px);
+}
+
 .couple-frame__actions {
   display: flex;
   align-items: center;
@@ -1250,6 +1425,149 @@ html.is-flat body {
   transition: opacity 0.3s ease;
 }
 
+/* ───────── Akshata & Petal Shower Blessing Ritual ───────── */
+.akshata-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1.4rem auto 0.6rem;
+  position: relative;
+  z-index: 12;
+}
+
+.akshata-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fff8e7 60%, #faecd0 100%);
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  box-shadow:
+    0 6px 20px rgba(180, 140, 70, 0.2),
+    0 0 15px rgba(212, 175, 55, 0.25);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.akshata-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 10px 28px rgba(180, 140, 70, 0.3),
+    0 0 24px rgba(212, 175, 55, 0.45);
+}
+
+.akshata-btn:active {
+  transform: scale(0.97);
+}
+
+.akshata-btn__icon {
+  font-size: 1.35rem;
+  animation: petalWiggle 3s ease-in-out infinite;
+}
+
+@keyframes petalWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+.akshata-btn__text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+}
+
+.akshata-btn__text strong {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold-deep);
+  letter-spacing: 0.02em;
+}
+
+.akshata-btn__text small {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.akshata-btn__count {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold-deep));
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(148, 109, 10, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Sacred Particles (Akshata Rice, Rose Petals, Marigold, Gold Flakes) */
+.akshata-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.akshata-particle {
+  position: absolute;
+  top: 0;
+  will-change: transform, opacity;
+  animation: akshataFall var(--fall-dur, 3s) linear var(--fall-delay, 0s) forwards;
+}
+
+@keyframes akshataFall {
+  0% {
+    transform: translate3d(0, -20px, 0) rotate(0deg) scale(var(--scale, 1));
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate3d(var(--end-x, 0vw), 110vh, 0) rotate(var(--rot, 360deg)) scale(var(--scale, 1));
+    opacity: 0;
+  }
+}
+
+.akshata-particle--akshata {
+  width: 5px;
+  height: 12px;
+  background: linear-gradient(135deg, #ffe066 0%, #d4a017 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow: 0 0 5px rgba(212, 160, 23, 0.7);
+}
+
+.akshata-particle--rose {
+  width: 14px;
+  height: 13px;
+  background: radial-gradient(circle at 40% 40%, #ff4d6d 0%, #a61c30 85%);
+  border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%;
+  box-shadow: 0 2px 6px rgba(166, 28, 48, 0.45);
+}
+
+.akshata-particle--marigold {
+  width: 11px;
+  height: 11px;
+  background: radial-gradient(circle, #ffaa00 0%, #e65c00 70%, #a61c30 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(230, 92, 0, 0.55);
+}
+
+.akshata-particle--gold-flake {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(45deg, #fff2a8, #d4af37, #aa771c);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.85);
+}
+
 @media (min-width: 720px) {
   body { font-size: 1.2rem; }
   .card { padding: 3.6rem 2.4rem 2.8rem; }
@@ -1269,7 +1587,8 @@ html.is-flat body {
   .story-scroll-pill,
   .story-autoscroll-pill,
   .couple-frame__date-badge,
-  .story-frame-card__badge {
+  .story-frame-card__badge,
+  .wish-pill {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }

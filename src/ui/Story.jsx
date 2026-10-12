@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Corner, Divider } from './Ornaments.jsx'
 import { TreeBranchLeft, TreeBranchRight, FloatingLeaves } from './TreeBranches.jsx'
+import AkshataShower from './AkshataShower.jsx'
 import config from '../config/wedding.config.js'
 
 /**
@@ -100,6 +101,9 @@ export default function Story({ reduced }) {
             </div>
           </article>
         </div>
+
+        {/* Interactive Sacred Akshata & Petal Shower Blessing */}
+        <AkshataShower className="story-akshata-shower" />
 
         <div className="story-scroll-pill">
           <span className="story-scroll-pill__dot" />

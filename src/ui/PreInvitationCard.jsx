@@ -32,7 +32,7 @@ const PreInvitationCard = forwardRef(function PreInvitationCard({ onOpen, hidden
         <Corner className="card__corner card__corner--br" />
 
         <p className="precard__deva" lang="sa">
-          ॥ श्री गणेशाय नमः ॥ · ॥ श्री सीता राम कल्याणम् ॥
+          ॥ श्री गणेशाय नमः ॥ · ॥ శ్రీ సీతారామ కళ్యాణ వైభోగమే ॥
         </p>
 
         <p className="precard__blessing">
@@ -50,6 +50,23 @@ const PreInvitationCard = forwardRef(function PreInvitationCard({ onOpen, hidden
         </h1>
 
         <Divider className="precard__divider" />
+
+        {/* 3D Royal Monogram Wax Seal */}
+        <div className="wax-seal-wrapper">
+          <div className="wax-seal" aria-hidden="true">
+            <div className="wax-seal__outer">
+              <div className="wax-seal__ring">
+                <span className="wax-seal__laurel">🌿</span>
+                <span className="wax-seal__monogram">
+                  <span className="wax-seal__letter">H</span>
+                  <span className="wax-seal__heart">❤</span>
+                  <span className="wax-seal__letter">M</span>
+                </span>
+                <span className="wax-seal__laurel">🌿</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="precard__dates">
           <div className="precard__date-pill">
