@@ -1,174 +1,29 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import config from '../config/wedding.config.js'
 import { formatDate } from '../lib/format.js'
 import { Divider } from './Ornaments.jsx'
 
-const TOTAL_FRAMES = 113
-
 /**
  * CoupleInviteReveal
- * Renders the 113 animation frames of T. Haarika & B. Manoj.
- * Frames progress ONLY when the user scrolls.
- * At the last frame, an elegant half-gradient covers strictly the bottom half (50%)
- * with the invitation message: "We Are Cordially Inviting You!"
+ * Grand finale personal wedding invitation featuring T. Haarika & B. Manoj (coupleImage).
+ * As the guest scrolls into view, an elegant half-gradient covers strictly the bottom half (50%)
+ * revealing: "We Are Cordially Inviting You!" with wedding dates and WhatsApp wishes.
  */
 export default function CoupleInviteReveal({ reduced }) {
   const containerRef = useRef(null)
-  const canvasRef = useRef(null)
   const overlayRef = useRef(null)
-  const barRef = useRef(null)
-  const imagesRef = useRef([])
-  const currentFrameRef = useRef(1)
-  const lastDrawnIndexRef = useRef(-1)
-  const isRevealedRef = useRef(false)
   const [showInviteText, setShowInviteText] = useState(false)
 
   const { bride, groom } = config.couple
   const events = config.events.filter((e) => e.enabled)
 
-  // Draw frame on canvas with maximum crispness and zero flicker
-  const drawFrame = useCallback((frameIdx) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const img = imagesRef.current[frameIdx - 1]
-
-    // If target frame is not loaded yet, do not clear the canvas to prevent blank flashes
-    if (!img || !img.complete || img.naturalWidth === 0) return
-
-    const cw = canvas.width
-    const ch = canvas.height
-    if (cw === 0 || ch === 0) return
-
-    ctx.clearRect(0, 0, cw, ch)
-    ctx.imageSmoothingEnabled = true
-    ctx.imageSmoothingQuality = 'medium'
-
-    // Cover fit
-    const iw = img.naturalWidth
-    const ih = img.naturalHeight
-    const scale = Math.max(cw / iw, ch / ih)
-    const sw = iw * scale
-    const sh = ih * scale
-    const sx = (cw - sw) / 2
-    const sy = (ch - sh) / 2
-
-    ctx.drawImage(img, sx, sy, sw, sh)
-    lastDrawnIndexRef.current = frameIdx
-  }, [])
-
-  // Load Frame 1 immediately for crisp initial render, then batch-load remaining frames progressively
-  useEffect(() => {
-    let active = true
-    const imgs = new Array(TOTAL_FRAMES)
-
-    // Load Frame 1 immediately
-    const img1 = new Image()
-    img1.src = '/media/frames/f-001.jpg'
-    img1.onload = () => {
-      if (active && currentFrameRef.current === 1) {
-        drawFrame(1)
-      }
-    }
-    imgs[0] = img1
-    imagesRef.current = imgs
-
-    // Gently stream remaining frames in lightweight idle batches
-    const loadRemaining = () => {
-      if (!active) return
-      let idx = 2
-      const batchSize = 6
-
-      const nextBatch = () => {
-        if (!active || idx > TOTAL_FRAMES) return
-        for (let b = 0; b < batchSize && idx <= TOTAL_FRAMES; b++, idx++) {
-          const img = new Image()
-          const num = String(idx).padStart(3, '0')
-          img.src = `/media/frames/f-${num}.jpg`
-          imgs[idx - 1] = img
-        }
-        if (idx <= TOTAL_FRAMES) {
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(nextBatch, { timeout: 400 })
-          } else {
-            setTimeout(nextBatch, 80)
-          }
-        }
-      }
-      nextBatch()
-    }
-
-    // Delay background fetch by 1.5s so temple doors and audio get initial priority
-    const idleTimer = setTimeout(loadRemaining, 1500)
-
-    return () => {
-      active = false
-      clearTimeout(idleTimer)
-    }
-  }, [drawFrame])
-
-  // Canvas high-DPI sizing on mount and resize (capped at 1.5 DPR for low-end mobile fluidity)
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const resizeCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
-      const rect = canvas.getBoundingClientRect()
-      const w = rect.width || 360
-      const h = rect.height || 640
-      const nw = Math.round(w * dpr)
-      const nh = Math.round(h * dpr)
-      if (canvas.width !== nw || canvas.height !== nh) {
-        canvas.width = nw
-        canvas.height = nh
-      }
-      drawFrame(currentFrameRef.current)
-    }
-
-    resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
-    return () => window.removeEventListener('resize', resizeCanvas)
-  }, [drawFrame])
-
-  // Scrub frame directly without triggering React re-renders on every scroll tick
-  const goToFrame = useCallback((frameNum) => {
-    const clamped = Math.max(1, Math.min(TOTAL_FRAMES, Math.round(frameNum)))
-    if (clamped === lastDrawnIndexRef.current) return
-    currentFrameRef.current = clamped
-    drawFrame(clamped)
-
-    if (barRef.current) {
-      barRef.current.style.width = `${(clamped / TOTAL_FRAMES) * 100}%`
-    }
-  }, [drawFrame])
-
-  // Hysteresis latching: prevents flickering and repetition at the bottom of the scroll
-  const updateOverlay = useCallback((progress, frame) => {
-    const isEnd = progress >= 0.91 || frame >= 110
-    const isFarUp = progress < 0.80 && frame < 105
-
-    if (isEnd && !isRevealedRef.current) {
-      isRevealedRef.current = true
-      setShowInviteText(true)
-      if (overlayRef.current) overlayRef.current.classList.add('is-visible')
-    } else if (isFarUp && isRevealedRef.current) {
-      isRevealedRef.current = false
-      setShowInviteText(false)
-      if (overlayRef.current) overlayRef.current.classList.remove('is-visible')
-    }
-  }, [])
-
-  // ScrollTrigger: strictly scroll-driven, pinned in view
+  // Scroll-driven trigger to reveal bottom 50% invitation card
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
     if (reduced) {
-      goToFrame(TOTAL_FRAMES)
-      isRevealedRef.current = true
       setShowInviteText(true)
       if (overlayRef.current) overlayRef.current.classList.add('is-visible')
       return
@@ -176,32 +31,22 @@ export default function CoupleInviteReveal({ reduced }) {
 
     const st = ScrollTrigger.create({
       trigger: container,
-      start: 'top top',
-      end: '+=180%',
-      pin: true,
-      anticipatePin: 1,
-      scrub: 0.1,
-      fastScrollEnd: true,
-      preventOverlaps: true,
-      onUpdate: (self) => {
-        // Clamp strictly to last frame at the end of progress to eliminate jitter
-        let frame
-        if (self.progress >= 0.98) {
-          frame = TOTAL_FRAMES
-        } else {
-          frame = Math.round(1 + self.progress * (TOTAL_FRAMES - 1))
-        }
-        goToFrame(frame)
-        updateOverlay(self.progress, frame)
+      start: 'top 75%',
+      end: 'bottom 40%',
+      onEnter: () => {
+        setShowInviteText(true)
+        if (overlayRef.current) overlayRef.current.classList.add('is-visible')
+      },
+      onLeaveBack: () => {
+        setShowInviteText(false)
+        if (overlayRef.current) overlayRef.current.classList.remove('is-visible')
       },
     })
-
-    goToFrame(1)
 
     return () => {
       st.kill()
     }
-  }, [goToFrame, updateOverlay, reduced])
+  }, [reduced])
 
   return (
     <section
@@ -220,21 +65,17 @@ export default function CoupleInviteReveal({ reduced }) {
           <Divider className="panel__divider" />
         </header>
 
-        {/* 113-Frame Portrait Frame - strictly scroll-scrubbed */}
+        {/* Real Couple Portrait Card */}
         <div className="couple-frame-box">
-          <canvas
-            ref={canvasRef}
-            className="couple-frame__canvas"
-            aria-label="Animation of T. Haarika and B. Manoj inviting guests"
-          />
-
-          <noscript>
+          <picture>
+            <source type="image/webp" srcSet="/media/coupleImage.webp" />
             <img
-              src="/media/frames/f-113.jpg"
-              alt="T. Haarika & B. Manoj"
-              className="couple-frame__fallback"
+              src="/media/coupleImage.jpg"
+              alt={`${bride.name} & ${groom.name}`}
+              className="couple-frame__img"
+              loading="lazy"
             />
-          </noscript>
+          </picture>
 
           {/* STRICTLY HALF GRADIENT OVERLAY (Bottom 50% only) */}
           <div
@@ -266,7 +107,7 @@ export default function CoupleInviteReveal({ reduced }) {
               <div className="couple-frame__actions">
                 <a
                   href={`https://wa.me/${config.rsvp.whatsappNumber || '919876543210'}?text=${encodeURIComponent(
-                    'Warmest congratulations and best wishes to T. Haarika & B. Manoj on your wedding celebration!'
+                    `Warmest congratulations and best wishes to ${bride.name} & ${groom.name} on your wedding celebration!`
                   )}`}
                   className="btn btn--gold btn--small"
                   target="_blank"
@@ -279,15 +120,6 @@ export default function CoupleInviteReveal({ reduced }) {
                 </a>
               </div>
             </div>
-          </div>
-
-          {/* Progress bar */}
-          <div className="couple-frame__bar" aria-hidden="true">
-            <div
-              ref={barRef}
-              className="couple-frame__bar-fill"
-              style={{ width: '1%' }}
-            />
           </div>
         </div>
       </div>

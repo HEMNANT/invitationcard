@@ -461,26 +461,152 @@ html.is-flat body {
 .story__head h2 { font-size: clamp(1.7rem, 6.6vw, 2.5rem); font-weight: 500; line-height: 1.12; margin-top: 0.3rem; color: var(--text-main); text-shadow: 0 2px 14px rgba(255, 255, 255, 0.9); }
 .story__stage { flex: 1; min-height: 40svh; touch-action: pan-y; cursor: grab; display: grid; place-items: center; padding: 0.5rem 0; outline-offset: -6px; }
 
-/* ───────── Two Hearts Scroll-Driven Story Section ───────── */
-.story-scroll-container {
+/* ───────── Two Hearts Story Section with Botanical Tree Animation ───────── */
+.story-tree-section {
   position: relative;
-  width: 100%;
-  min-height: 290vh; /* Scroll length: guest scrolls through all 6 photos before next section */
-}
-
-.story-sticky-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  max-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem var(--gutter) 1.5rem;
-  box-sizing: border-box;
+  padding: 3.5rem var(--gutter) 4.5rem;
   overflow: hidden;
-  z-index: 2;
+  box-sizing: border-box;
+}
+
+.story-stage {
+  position: relative;
+  z-index: 5;
+  width: min(100%, 38rem);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.story__deva {
+  font-family: var(--deva);
+  font-size: 1.15rem;
+  color: var(--gold-soft);
+  margin: 0.2rem 0 0.6rem;
+  letter-spacing: 0.06em;
+}
+
+/* Botanical Tree Branches (Scroll-Animated) */
+.tree-branch {
+  position: absolute;
+  top: 12%;
+  width: clamp(90px, 22vw, 190px);
+  pointer-events: none;
+  z-index: 6;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+
+.tree-branch--left {
+  left: max(-10px, calc(50% - 280px));
+}
+
+.tree-branch--right {
+  right: max(-10px, calc(50% - 280px));
+}
+
+.tree-branch__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+}
+
+/* Swaying leaves */
+.tree-leaf {
+  transform-origin: center;
+}
+.tree-leaf--sway1 {
+  animation: leafSway 4.2s ease-in-out infinite alternate;
+}
+.tree-leaf--sway2 {
+  animation: leafSway 5.1s ease-in-out infinite 0.8s alternate;
+}
+.tree-leaf--sway3 {
+  animation: leafSway 3.7s ease-in-out infinite 1.4s alternate;
+}
+
+@keyframes leafSway {
+  0% { transform: rotate(-3deg) scale(0.98); }
+  100% { transform: rotate(3deg) scale(1.02); }
+}
+
+/* Floating / Drifting Leaves */
+.floating-leaves-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.drift-leaf {
+  position: absolute;
+  width: 16px;
+  height: 24px;
+  background: linear-gradient(135deg, #4a7c59, #2c5539);
+  border-radius: 50% 0 50% 0;
+  opacity: 0.55;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.drift-leaf--1 {
+  top: 15%;
+  left: 12%;
+  animation: floatDrift1 7s ease-in-out infinite;
+}
+
+.drift-leaf--2 {
+  top: 40%;
+  right: 15%;
+  background: linear-gradient(135deg, #d4af37, #9a7b1c);
+  opacity: 0.7;
+  animation: floatDrift2 8.5s ease-in-out infinite;
+}
+
+.drift-leaf--3 {
+  top: 70%;
+  left: 20%;
+  animation: floatDrift1 9s ease-in-out infinite 1.5s;
+}
+
+.drift-petal {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #ffffff 40%, #fae08c 100%);
+  border-radius: 50% 50% 50% 0;
+  opacity: 0.75;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.6));
+}
+
+.drift-petal--1 {
+  top: 25%;
+  right: 22%;
+  animation: floatDrift2 6s ease-in-out infinite;
+}
+
+.drift-petal--2 {
+  top: 60%;
+  right: 10%;
+  animation: floatDrift1 7.5s ease-in-out infinite 2s;
+}
+
+@keyframes floatDrift1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(12px, 18px) rotate(18deg); }
+}
+
+@keyframes floatDrift2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-10px, 15px) rotate(-16deg); }
 }
 
 .story-solo-stage,
@@ -490,7 +616,7 @@ html.is-flat body {
   justify-content: center;
   width: 100%;
   max-width: 36rem;
-  margin: 0.6rem auto 0.4rem;
+  margin: 0.8rem auto 0.6rem;
   padding: 0 0.8rem;
   box-sizing: border-box;
 }
@@ -498,24 +624,24 @@ html.is-flat body {
 .story-frame-card {
   position: relative;
   width: 100%;
-  max-width: 440px;
-  aspect-ratio: 4 / 5; /* Wider, fatter cinematic aspect ratio */
-  border-radius: 12px;
+  max-width: min(380px, 88vw);
+  aspect-ratio: 2 / 3;
+  border-radius: 14px;
   overflow: hidden;
   border: 4px solid var(--gold);
   background: #140e0a;
   box-shadow:
-    0 20px 55px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.7),
-    0 0 35px rgba(212, 175, 55, 0.35);
+    0 24px 65px rgba(0, 0, 0, 0.6),
+    0 0 0 1.5px rgba(255, 255, 255, 0.8),
+    0 0 35px rgba(212, 175, 55, 0.45);
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
 }
 
 .story-frame-card:hover {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-4px) scale(1.01);
   box-shadow:
-    0 26px 65px rgba(0, 0, 0, 0.65),
-    0 0 45px rgba(212, 175, 55, 0.5);
+    0 28px 75px rgba(0, 0, 0, 0.7),
+    0 0 45px rgba(212, 175, 55, 0.55);
 }
 
 .story-frame-card__img-wrap {
@@ -945,18 +1071,12 @@ html.is-flat body {
   touch-action: pan-y;
 }
 
-.couple-frame__canvas {
+.couple-frame__img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-}
-
-.couple-frame__fallback {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  object-position: center 20%;
 }
 
 /* THE HALF-GRADIENT OVERLAY ON THE LAST FRAME (STRICTLY LOWER 50% ONLY) */

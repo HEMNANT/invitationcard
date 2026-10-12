@@ -1,36 +1,18 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { Corner, Divider, Icon } from './Ornaments.jsx'
+import { useEffect, useRef, useState } from 'react'
+import { Corner, Divider } from './Ornaments.jsx'
+import { TreeBranchLeft, TreeBranchRight, FloatingLeaves } from './TreeBranches.jsx'
+import config from '../config/wedding.config.js'
 
 /**
- * 6 selected couple moments from the collection:
- * ezgif-frame-004, ezgif-frame-011, ezgif-frame-020,
- * ezgif-frame-005, ezgif-frame-029, ezgif-frame-037
+ * Story
+ * "Two Hearts. One Beautiful Beginning."
+ * Showcases T. Haarika & B. Manoj's real portrait (coupleImage),
+ * framed by royal botanical tree branches that sway and animate with scroll parallax.
  */
-const STORY_FRAMES = [
-  { frame: 4, file: 'f-004.jpg', label: 'ezgif-frame-004', title: 'Joyful Radiance', subtitle: 'A Golden Smile' },
-  { frame: 11, file: 'f-011.jpg', label: 'ezgif-frame-011', title: 'Tender Glance', subtitle: 'Two Hearts Meet' },
-  { frame: 20, file: 'f-020.jpg', label: 'ezgif-frame-020', title: 'Hand in Hand', subtitle: 'A Sacred Promise' },
-  { frame: 5, file: 'f-005.jpg', label: 'ezgif-frame-005', title: 'Golden Laughter', subtitle: 'Moments of Bliss' },
-  { frame: 29, file: 'f-029.jpg', label: 'ezgif-frame-029', title: 'Soulful Harmony', subtitle: 'Walking Together' },
-  { frame: 37, file: 'f-037.jpg', label: 'ezgif-frame-037', title: 'Eternal Beginning', subtitle: 'Bound by Love & Grace' },
-]
-
 export default function Story({ reduced }) {
-  const [index, setIndex] = useState(0)
   const containerRef = useRef(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
 
-  const current = STORY_FRAMES[index]
-
-  // Preload all 6 frames for instant transitions
-  useEffect(() => {
-    STORY_FRAMES.forEach((item) => {
-      const img = new Image()
-      img.src = `/media/frames/${item.file}`
-    })
-  }, [])
-
-  // Scroll-driven gallery: as guest scrolls through this section,
-  // it cycles through all 6 photos before continuing down to the next section
   useEffect(() => {
     if (reduced) return
 
@@ -42,23 +24,14 @@ export default function Story({ reduced }) {
           const el = containerRef.current
           if (!el) return
           const rect = el.getBoundingClientRect()
-          const totalScrollable = el.offsetHeight - window.innerHeight
-          if (totalScrollable <= 0) return
+          const vh = window.innerHeight
 
-          // Distance scrolled into the container
-          const currentScroll = -rect.top
-          if (currentScroll < 0) {
-            setIndex((prev) => (prev !== 0 ? 0 : prev))
-            return
-          }
-          if (currentScroll >= totalScrollable) {
-            setIndex((prev) => (prev !== STORY_FRAMES.length - 1 ? STORY_FRAMES.length - 1 : prev))
-            return
-          }
+          // Calculate progress as section moves through viewport
+          const totalDistance = rect.height + vh
+          const currentDistance = vh - rect.top
+          const progress = Math.max(0, Math.min(1, currentDistance / totalDistance))
 
-          const progress = Math.max(0, Math.min(0.999, currentScroll / totalScrollable))
-          const targetIdx = Math.floor(progress * STORY_FRAMES.length)
-          setIndex((prev) => (prev !== targetIdx ? targetIdx : prev))
+          setScrollProgress(progress)
         })
         ticking = true
       }
@@ -69,126 +42,68 @@ export default function Story({ reduced }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [reduced])
 
-  const go = useCallback((delta) => {
-    setIndex((prev) => {
-      const next = (prev + delta + STORY_FRAMES.length) % STORY_FRAMES.length
-      // If manually clicking, optionally align scroll position
-      const el = containerRef.current
-      if (el) {
-        const totalScrollable = el.offsetHeight - window.innerHeight
-        if (totalScrollable > 0) {
-          const targetY = el.offsetTop + (next / STORY_FRAMES.length) * totalScrollable
-          window.scrollTo({ top: targetY, behavior: 'smooth' })
-        }
-      }
-      return next
-    })
-  }, [])
+  // Parallax subtle scale & vertical float for the couple photo
+  const imgScale = reduced ? 1 : 1.05 - scrollProgress * 0.05
+  const imgTranslateY = reduced ? 0 : (scrollProgress - 0.5) * -16
 
-  const selectPhoto = useCallback((idx) => {
-    setIndex(idx)
-    const el = containerRef.current
-    if (el) {
-      const totalScrollable = el.offsetHeight - window.innerHeight
-      if (totalScrollable > 0) {
-        const targetY = el.offsetTop + (idx / STORY_FRAMES.length) * totalScrollable
-        window.scrollTo({ top: targetY, behavior: 'smooth' })
-      }
-    }
-  }, [])
-
-  const isLast = index === STORY_FRAMES.length - 1
+  const { bride, groom } = config.couple
 
   return (
-    <section id="story" ref={containerRef} className="story-scroll-container" aria-label="Our Story">
-      <div className="story-sticky-stage">
+    <section id="story" ref={containerRef} className="story-tree-section" aria-label="Our Story">
+      {/* Scroll-animated botanical trees framing the couple */}
+      <TreeBranchLeft progress={scrollProgress} />
+      <TreeBranchRight progress={scrollProgress} />
+      <FloatingLeaves progress={scrollProgress} />
+
+      <div className="story-stage">
         <header className="story__head">
           <p className="eyebrow">Our Story</p>
           <h2 id="story-title">Two Hearts. One Beautiful Beginning.</h2>
           <Divider className="panel__divider" />
-          <div className="story-scroll-pill">
-            <span className="story-scroll-pill__dot" />
-            <span>
-              {isLast ? '✨ Keep scrolling for Sacred Wedding Card ↓' : `Scroll down to explore moments (${index + 1} of ${STORY_FRAMES.length}) ↓`}
-            </span>
-          </div>
+          <p className="story__deva" lang="sa">
+            ॥ श्री सीता राम कल्याणम् ॥
+          </p>
         </header>
 
-        {/* Centerpiece Photo Card - GPU composited layer */}
+        {/* Centerpiece Photo Card with Tree Parallax & Cinematic Animation */}
         <div className="story-solo-stage" role="region" aria-label="Couple photo frame" tabIndex={0}>
-          <article className="story-frame-card story-frame-card--solo">
+          <article className="story-frame-card story-frame-card--tree">
             <Corner className="card__corner card__corner--tl" />
             <Corner className="card__corner card__corner--tr" />
             <Corner className="card__corner card__corner--bl" />
             <Corner className="card__corner card__corner--br" />
-            <div className="story-frame-card__img-wrap" style={{ position: 'relative' }}>
-              {STORY_FRAMES.map((item, i) => (
+
+            <div className="story-frame-card__img-wrap">
+              <picture>
+                <source type="image/webp" srcSet="/media/coupleImage.webp" />
                 <img
-                  key={item.frame}
-                  src={`/media/frames/${item.file}`}
-                  alt={`T. Haarika & B. Manoj - ${item.title}`}
+                  src="/media/coupleImage.jpg"
+                  alt={`${bride.name} & ${groom.name}`}
                   loading="eager"
-                  decoding="async"
-                  className="story-frame-card__img"
+                  className="story-frame-card__img story-frame-card__img--animated"
                   style={{
-                    position: 'absolute',
-                    inset: 0,
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    opacity: i === index ? 1 : 0,
-                    pointerEvents: i === index ? 'auto' : 'none',
-                    transition: 'opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                    willChange: 'opacity',
+                    transform: `scale(${imgScale}) translate3d(0, ${imgTranslateY}px, 0)`,
+                    willChange: 'transform',
                   }}
                 />
-              ))}
+              </picture>
+
               <div className="story-frame-card__overlay">
-                <span className="story-frame-card__badge">{current.label}</span>
-                <h3 className="story-frame-card__title">{current.title}</h3>
-                <p className="story-frame-card__sub">{current.subtitle}</p>
+                <span className="story-frame-card__badge">Auspicious Union</span>
+                <h3 className="story-frame-card__title">
+                  {bride.name} <i aria-hidden="true">&amp;</i> {groom.name}
+                </h3>
+                <p className="story-frame-card__sub">
+                  Bound by Love, Grace &amp; Eternal Blessings
+                </p>
               </div>
             </div>
           </article>
         </div>
 
-        {/* Navigation & Dot Indicators */}
-        <div className="story__controls">
-          <button
-            type="button"
-            className="round"
-            onClick={() => go(-1)}
-            aria-label="Previous couple moment"
-          >
-            <Icon.Prev />
-          </button>
-
-          <div className="story__caption" aria-live="polite">
-            <strong>{current.title}</strong>
-            <span>Photo {index + 1} of {STORY_FRAMES.length}</span>
-            <div className="dots" role="tablist" aria-label="Choose moment">
-              {STORY_FRAMES.map((it, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === index}
-                  aria-label={`Photo ${i + 1} (${it.label})`}
-                  className={i === index ? 'on' : ''}
-                  onClick={() => selectPhoto(i)}
-                />
-              ))}
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="round"
-            onClick={() => go(1)}
-            aria-label="Next couple moment"
-          >
-            <Icon.Next />
-          </button>
+        <div className="story-scroll-pill">
+          <span className="story-scroll-pill__dot" />
+          <span>✨ Scroll to explore Sacred Wedding Card ↓</span>
         </div>
       </div>
     </section>
