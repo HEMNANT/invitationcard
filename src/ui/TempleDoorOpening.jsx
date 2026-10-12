@@ -1,37 +1,58 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from 'react'
 
 /**
  * TempleDoorOpening
- * Plays the temple door opening animation from G:\haarikaMar\templteDoor
- * (using /media/temple-doors.mp4 with fallback to /media/temple-doors/f-%03d.jpg).
- *
- * Requirements:
- * 1. Door opening animation starts after the first animation (open card) completes.
- * 2. Frames 1 to 113: The ornate temple doors swing open in high definition.
- * 3. At Frame 113: Triggers onFrame113 to make the hero content visible.
- * 4. Frames 114 to 300: Continue playing in the background behind the content,
- *    and loop the open-courtyard ambient sequence.
+ * Plays the temple door opening animation once (single-time, no loop).
+ * - Frames 1 to 113 (~3.77s): Ornate temple doors swing open in high definition.
+ * - Frame 113: Triggers onFrame113 to smoothly reveal hero content.
+ * - Frames 114 to 300 (up to 10s): Camera travels into the open courtyard.
+ * - Frame 300: Pauses on the final frame (no loop, stays open permanently).
  */
-export default function TempleDoorOpening({ active = true, onFrame113 }) {
+const TempleDoorOpening = forwardRef(function TempleDoorOpening({ active = false, onFrame113 }, ref) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const [useCanvas, setUseCanvas] = useState(false)
-  const [frame113Reached, setFrame113Reached] = useState(false)
   const hasTriggeredRef = useRef(false)
+  const isPlayingRef = useRef(false)
 
   // 300 frames encoded at 30fps = 10.0s
   // Frame 113 / 300 = 37.66% = 3.766s
   const FRAME_113_TIME = 3.766
   const TOTAL_FRAMES = 300
 
-  // Trigger frame 113 content reveal
   const triggerReveal = useCallback(() => {
     if (!hasTriggeredRef.current) {
       hasTriggeredRef.current = true
-      setFrame113Reached(true)
       onFrame113?.()
     }
   }, [onFrame113])
+
+  const playVideo = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+    video.muted = true
+    video.defaultMuted = true
+    video.currentTime = 0
+    isPlayingRef.current = true
+
+    video.play().catch((err) => {
+      console.warn('Door video playback notice:', err)
+      // Fallback to canvas only if video format is unplayable
+      setUseCanvas(true)
+    })
+  }, [])
+
+  // Expose start() imperative handle for direct synchronous trigger from tap handler
+  useImperativeHandle(ref, () => ({
+    start: () => {
+      playVideo()
+    },
+    stop: () => {
+      if (videoRef.current) {
+        videoRef.current.pause()
+      }
+    },
+  }), [playVideo])
 
   // Track video playback
   const handleTimeUpdate = useCallback(() => {
@@ -44,53 +65,50 @@ export default function TempleDoorOpening({ active = true, onFrame113 }) {
       triggerReveal()
     }
 
-    // When reaching the end of all 300 frames (~10s), loop back to frame 114 (3.77s)
-    // so the doors remain wide open with the courtyard moving gently as the background
-    if (t >= video.duration - 0.12) {
-      video.currentTime = FRAME_113_TIME
-      video.play().catch(() => {})
+    // Single-time animation: when reaching the end, pause on final open frame (NO LOOP)
+    if (t >= video.duration - 0.08) {
+      video.pause()
+      isPlayingRef.current = false
     }
   }, [triggerReveal])
 
+  // When video naturally ends: pause on final open frame (NO LOOP)
   const handleEnded = useCallback(() => {
     const video = videoRef.current
     if (!video) return
-    video.currentTime = FRAME_113_TIME
-    video.play().catch(() => {})
+    video.pause()
+    isPlayingRef.current = false
   }, [])
 
+  // Ensure video properties on mount and preload
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
+    video.muted = true
+    video.defaultMuted = true
+    video.playsInline = true
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
+    video.load()
+  }, [])
 
+  // Respond to active prop
+  useEffect(() => {
     if (active) {
-      hasTriggeredRef.current = false
-      setFrame113Reached(false)
-      video.currentTime = 0
-      const playPromise = video.play()
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.warn('Temple door video play notice:', err)
-        })
-      }
-    } else {
-      video.pause()
-      video.currentTime = 0
-      hasTriggeredRef.current = false
-      setFrame113Reached(false)
+      playVideo()
     }
-  }, [active])
+  }, [active, playVideo])
 
-  // Safety fallback: reveal content after 4.0s even if timeupdate events are throttled
+  // Safety fallback: reveal content after 4.2s even if video events are throttled
   useEffect(() => {
     if (!active) return
     const timer = setTimeout(() => {
       triggerReveal()
-    }, 4000)
+    }, 4200)
     return () => clearTimeout(timer)
   }, [active, triggerReveal])
 
-  // Canvas fallback frame animator (if video ever fails)
+  // Canvas fallback frame animator (if video ever fails on ancient devices)
   useEffect(() => {
     if (!useCanvas) return
     const canvas = canvasRef.current
@@ -124,7 +142,8 @@ export default function TempleDoorOpening({ active = true, onFrame113 }) {
 
       current++
       if (current > TOTAL_FRAMES) {
-        current = 114 // loop open courtyard frames
+        // Single time, NO LOOP: stay on final frame
+        return
       }
 
       animId = setTimeout(step, 33) // ~30 fps
@@ -143,15 +162,16 @@ export default function TempleDoorOpening({ active = true, onFrame113 }) {
         <video
           ref={videoRef}
           className="temple-door-video"
+          src="/media/temple-doors.mp4"
           playsInline
           muted
+          autoPlay={false}
+          loop={false}
           preload="auto"
           poster="/media/temple-doors/f-001.jpg"
           onTimeUpdate={handleTimeUpdate}
           onEnded={handleEnded}
-        >
-          <source src="/media/temple-doors.mp4" type="video/mp4" />
-        </video>
+        />
       ) : (
         <canvas
           ref={canvasRef}
@@ -162,4 +182,6 @@ export default function TempleDoorOpening({ active = true, onFrame113 }) {
       )}
     </div>
   )
-}
+})
+
+export default TempleDoorOpening

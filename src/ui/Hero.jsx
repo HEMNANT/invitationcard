@@ -1,9 +1,9 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef } from 'react'
 import config from '../config/wedding.config.js'
 import { formatDate, formatTime, mainEvent } from '../lib/format.js'
 import { Divider } from './Ornaments.jsx'
 
-export default function Hero({ reduced, contentVisible, onScrollTour }) {
+export default function Hero({ reduced, contentVisible }) {
   const ref = useRef(null)
   const { bride, groom } = config.couple
   const ev = mainEvent()
@@ -12,7 +12,10 @@ export default function Hero({ reduced, contentVisible, onScrollTour }) {
 
   const handleCueClick = (e) => {
     e.preventDefault()
-    onScrollTour?.()
+    const target = document.getElementById('story')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   const isVisible = contentVisible || reduced
@@ -37,9 +40,9 @@ export default function Hero({ reduced, contentVisible, onScrollTour }) {
           type="button"
           className="scroll-cue"
           onClick={handleCueClick}
-          aria-label="Experience the 18-second calm scroll"
+          aria-label="Scroll to begin invitation story"
         >
-          <span>Scroll for the invitation</span>
+          <span>Scroll to begin our story</span>
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 9l6 6 6-6" />
           </svg>

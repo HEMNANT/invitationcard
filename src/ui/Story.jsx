@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
-import { useReveal } from '../hooks/useReveal.js'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Corner, Divider, Icon } from './Ornaments.jsx'
 
 /**
- * 6 requested couple frames from the collection:
+ * 6 selected couple moments from the collection:
  * ezgif-frame-004, ezgif-frame-011, ezgif-frame-020,
  * ezgif-frame-005, ezgif-frame-029, ezgif-frame-037
  */
@@ -18,13 +17,11 @@ const STORY_FRAMES = [
 
 export default function Story({ reduced }) {
   const [index, setIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
-  const ref = useRef(null)
-  useReveal(ref, '[data-reveal]', { reduced })
+  const containerRef = useRef(null)
 
   const current = STORY_FRAMES[index]
 
-  // Preload all 6 frames for instant, buttery transitions
+  // Preload all 6 frames for instant transitions
   useEffect(() => {
     STORY_FRAMES.forEach((item) => {
       const img = new Image()
@@ -32,132 +29,145 @@ export default function Story({ reduced }) {
     })
   }, [])
 
+  // Scroll-driven gallery: as guest scrolls through this section,
+  // it cycles through all 6 photos before continuing down to the next section
+  useEffect(() => {
+    if (reduced) return
+
+    const handleScroll = () => {
+      const el = containerRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const totalScrollable = el.offsetHeight - window.innerHeight
+      if (totalScrollable <= 0) return
+
+      // Distance scrolled into the container
+      const currentScroll = -rect.top
+      if (currentScroll < 0) {
+        setIndex(0)
+        return
+      }
+      if (currentScroll >= totalScrollable) {
+        setIndex(STORY_FRAMES.length - 1)
+        return
+      }
+
+      const progress = Math.max(0, Math.min(0.999, currentScroll / totalScrollable))
+      const targetIdx = Math.floor(progress * STORY_FRAMES.length)
+      setIndex(targetIdx)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [reduced])
+
   const go = useCallback((delta) => {
-    setIndex((prev) => (prev + delta + STORY_FRAMES.length) % STORY_FRAMES.length)
+    setIndex((prev) => {
+      const next = (prev + delta + STORY_FRAMES.length) % STORY_FRAMES.length
+      // If manually clicking, optionally align scroll position
+      const el = containerRef.current
+      if (el) {
+        const totalScrollable = el.offsetHeight - window.innerHeight
+        if (totalScrollable > 0) {
+          const targetY = el.offsetTop + (next / STORY_FRAMES.length) * totalScrollable
+          window.scrollTo({ top: targetY, behavior: 'smooth' })
+        }
+      }
+      return next
+    })
   }, [])
 
-  // Fast & smooth auto-slide through the 6 frames (1.8s interval)
-  useEffect(() => {
-    if (reduced || isPaused) return
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % STORY_FRAMES.length)
-    }, 1800)
-    return () => clearInterval(timer)
-  }, [reduced, isPaused])
-
-  // Swipe / Drag handling
-  const drag = useRef(null)
-  const onDown = (e) => {
-    setIsPaused(true)
-    drag.current = { x: e.clientX || (e.touches && e.touches[0].clientX) || 0 }
-  }
-  const onUp = (e) => {
-    setIsPaused(false)
-    if (!drag.current) return
-    const endX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || 0
-    const diff = endX - drag.current.x
-    drag.current = null
-    if (Math.abs(diff) > 30) {
-      go(diff < 0 ? 1 : -1)
+  const selectPhoto = useCallback((idx) => {
+    setIndex(idx)
+    const el = containerRef.current
+    if (el) {
+      const totalScrollable = el.offsetHeight - window.innerHeight
+      if (totalScrollable > 0) {
+        const targetY = el.offsetTop + (idx / STORY_FRAMES.length) * totalScrollable
+        window.scrollTo({ top: targetY, behavior: 'smooth' })
+      }
     }
-  }
+  }, [])
+
+  const isLast = index === STORY_FRAMES.length - 1
 
   return (
-    <section id="story" ref={ref} className="section story" data-section aria-labelledby="story-title">
-      <header className="story__head">
-        <p className="eyebrow" data-reveal>Our Story</p>
-        <h2 id="story-title" data-reveal>Two Hearts. One Beautiful Beginning.</h2>
-        <Divider className="panel__divider" />
-        <div className="story-autoscroll-pill" data-reveal>
-          <span className="story-autoscroll-dot" />
-          <span>{isPaused ? 'Auto-slide Paused' : 'Auto-sliding Moments'}</span>
-        </div>
-      </header>
+    <section id="story" ref={containerRef} className="story-scroll-container" aria-label="Our Story">
+      <div className="story-sticky-stage">
+        <header className="story__head">
+          <p className="eyebrow">Our Story</p>
+          <h2 id="story-title">Two Hearts. One Beautiful Beginning.</h2>
+          <Divider className="panel__divider" />
+          <div className="story-scroll-pill">
+            <span className="story-scroll-pill__dot" />
+            <span>
+              {isLast ? '✨ Keep scrolling for Sacred Wedding Card ↓' : `Scroll down to explore moments (${index + 1} of ${STORY_FRAMES.length}) ↓`}
+            </span>
+          </div>
+        </header>
 
-      {/* Single centerpiece frame (wider & fatter aspect ratio) */}
-      <div
-        className="story-solo-stage"
-        role="region"
-        aria-label="Couple moment frame"
-        tabIndex={0}
-        onPointerDown={onDown}
-        onPointerUp={onUp}
-        onPointerCancel={() => {
-          drag.current = null
-          setIsPaused(false)
-        }}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <article className="story-frame-card story-frame-card--solo" key={current.frame}>
-          <Corner className="card__corner card__corner--tl" />
-          <Corner className="card__corner card__corner--tr" />
-          <Corner className="card__corner card__corner--bl" />
-          <Corner className="card__corner card__corner--br" />
-          <div className="story-frame-card__img-wrap">
-            <img
-              src={`/media/frames/${current.file}`}
-              alt={`T. Harrika & T. Manoj - ${current.title}`}
-              loading="eager"
-              className="story-frame-card__img story-frame-card__img--animated"
-            />
-            <div className="story-frame-card__overlay">
-              <span className="story-frame-card__badge">{current.label}</span>
-              <h3 className="story-frame-card__title">{current.title}</h3>
-              <p className="story-frame-card__sub">{current.subtitle}</p>
+        {/* Centerpiece Photo Card */}
+        <div className="story-solo-stage" role="region" aria-label="Couple photo frame" tabIndex={0}>
+          <article className="story-frame-card story-frame-card--solo" key={current.frame}>
+            <Corner className="card__corner card__corner--tl" />
+            <Corner className="card__corner card__corner--tr" />
+            <Corner className="card__corner card__corner--bl" />
+            <Corner className="card__corner card__corner--br" />
+            <div className="story-frame-card__img-wrap">
+              <img
+                src={`/media/frames/${current.file}`}
+                alt={`T. Harrika & T. Manoj - ${current.title}`}
+                loading="eager"
+                className="story-frame-card__img story-frame-card__img--animated"
+              />
+              <div className="story-frame-card__overlay">
+                <span className="story-frame-card__badge">{current.label}</span>
+                <h3 className="story-frame-card__title">{current.title}</h3>
+                <p className="story-frame-card__sub">{current.subtitle}</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        {/* Navigation & Dot Indicators */}
+        <div className="story__controls">
+          <button
+            type="button"
+            className="round"
+            onClick={() => go(-1)}
+            aria-label="Previous couple moment"
+          >
+            <Icon.Prev />
+          </button>
+
+          <div className="story__caption" aria-live="polite">
+            <strong>{current.title}</strong>
+            <span>Photo {index + 1} of {STORY_FRAMES.length}</span>
+            <div className="dots" role="tablist" aria-label="Choose moment">
+              {STORY_FRAMES.map((it, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === index}
+                  aria-label={`Photo ${i + 1} (${it.label})`}
+                  className={i === index ? 'on' : ''}
+                  onClick={() => selectPhoto(i)}
+                />
+              ))}
             </div>
           </div>
-        </article>
-      </div>
 
-      {/* Controls & Dots */}
-      <div className="story__controls" data-reveal>
-        <button
-          type="button"
-          className="round"
-          onClick={() => go(-1)}
-          aria-label="Previous couple moment"
-        >
-          <Icon.Prev />
-        </button>
-
-        <div className="story__caption" aria-live="polite">
-          <strong>{current.title}</strong>
-          <span>Moment {index + 1} of {STORY_FRAMES.length}</span>
-          <div className="dots" role="tablist" aria-label="Choose moment">
-            {STORY_FRAMES.map((it, i) => (
-              <button
-                key={i}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                aria-label={`Moment ${i + 1} (${it.label})`}
-                className={i === index ? 'on' : ''}
-                onClick={() => setIndex(i)}
-              />
-            ))}
-          </div>
+          <button
+            type="button"
+            className="round"
+            onClick={() => go(1)}
+            aria-label="Next couple moment"
+          >
+            <Icon.Next />
+          </button>
         </div>
-
-        <button
-          type="button"
-          className="round"
-          onClick={() => go(1)}
-          aria-label="Next couple moment"
-        >
-          <Icon.Next />
-        </button>
-
-        <button
-          type="button"
-          className="round round--solid"
-          onClick={() => setIsPaused((p) => !p)}
-          aria-pressed={isPaused}
-          aria-label={isPaused ? 'Resume auto-slide' : 'Pause auto-slide'}
-          title={isPaused ? 'Resume auto-slide' : 'Pause auto-slide'}
-        >
-          {isPaused ? <Icon.Play /> : <Icon.Pause />}
-        </button>
       </div>
     </section>
   )

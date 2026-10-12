@@ -469,7 +469,28 @@ html.is-flat body {
 .story__head h2 { font-size: clamp(1.7rem, 6.6vw, 2.5rem); font-weight: 500; line-height: 1.12; margin-top: 0.3rem; color: var(--text-main); text-shadow: 0 2px 14px rgba(255, 255, 255, 0.9); }
 .story__stage { flex: 1; min-height: 40svh; touch-action: pan-y; cursor: grab; display: grid; place-items: center; padding: 0.5rem 0; outline-offset: -6px; }
 
-/* ───────── Two Hearts Solo-Frame Auto-Slide Section ───────── */
+/* ───────── Two Hearts Scroll-Driven Story Section ───────── */
+.story-scroll-container {
+  position: relative;
+  width: 100%;
+  min-height: 290vh; /* Scroll length: guest scrolls through all 6 photos before next section */
+}
+
+.story-sticky-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem var(--gutter) 1.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 2;
+}
+
 .story-solo-stage,
 .story-duo-stage {
   display: flex;
@@ -477,7 +498,7 @@ html.is-flat body {
   justify-content: center;
   width: 100%;
   max-width: 36rem;
-  margin: 1.2rem auto 0.8rem;
+  margin: 0.6rem auto 0.4rem;
   padding: 0 0.8rem;
   box-sizing: border-box;
 }
@@ -573,7 +594,7 @@ html.is-flat body {
 }
 
 .story-frame-card__title {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #fff4d6;
   margin: 0.1rem 0;
@@ -581,30 +602,33 @@ html.is-flat body {
 }
 
 .story-frame-card__sub {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: #e0d0b0;
   font-style: italic;
   margin: 0;
 }
 
-/* Auto-scroll status pill */
+/* Scroll status pill */
+.story-scroll-pill,
 .story-autoscroll-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  margin: 0.5rem auto 0;
-  padding: 0.28rem 0.85rem;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  margin: 0.35rem auto 0;
+  padding: 0.28rem 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.45);
   backdrop-filter: blur(8px);
   border-radius: 20px;
   font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold-deep);
   font-weight: 600;
+  box-shadow: 0 4px 14px rgba(180, 140, 70, 0.12);
 }
 
+.story-scroll-pill__dot,
 .story-autoscroll-dot {
   width: 7px;
   height: 7px;
